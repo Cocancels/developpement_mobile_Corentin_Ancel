@@ -43,7 +43,7 @@ class ReactCalculator extends Component {
   }
 
   _handleNumberInput(num) {
-    let inputValue = this.state.inputValue * 10 + num;
+    let inputValue = this.state.inputValue + num;
 
     this.setState({
       inputValue: inputValue,
@@ -90,6 +90,13 @@ class ReactCalculator extends Component {
   _handleStringInput(str) {
     switch (str) {
       case "/":
+        if (this.state.inputValue === 0) {
+          alert("Pas de division par 0 !");
+          this.setState({
+            previousInputValue: 0,
+            inputValue: 0,
+          });
+        }
       case "*":
       case "+":
       case "-":
@@ -99,6 +106,10 @@ class ReactCalculator extends Component {
           inputValue: 0,
         });
         break;
+      case ".":
+        this.setState({
+          inputValue: this.state.inputValue + str,
+        });
       case "=":
         let symbol = this.state.selectedSymbol,
           inputValue = this.state.inputValue,
