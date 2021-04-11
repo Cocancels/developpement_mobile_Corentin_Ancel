@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val INPUT_BUTTONS = listOf(
+                listOf("C", "CE"),
                 listOf("1", "2", "3", "/"),
                 listOf("4", "5", "6", "*"),
                 listOf("7", "8", "9", "-"),
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         addCells(findViewById(R.id.calculator_input_container_line2), 1)
         addCells(findViewById(R.id.calculator_input_container_line3), 2)
         addCells(findViewById(R.id.calculator_input_container_line4), 3)
+
     }
 
     private fun addCells(linearLayout: LinearLayout, position: Int) {
@@ -55,10 +57,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSymbolClicked(symbol: String) {
         this.symbol = symbol
-        previousInput = input
+
+        if(isFloat){
+            previousInput = input!!.div(10)
+        } else {
+            previousInput = input
+        }
         input = null
     }
-    private var input: Int? = null
+    private var input: Float? = null
 
     private fun updateDisplayContainer(value: Any) {
         findViewById<TextView>(R.id.calculator_display_container).text = value.toString()
@@ -69,13 +76,19 @@ class MainActivity : AppCompatActivity() {
         return length == 1 && isDigitsOnly()
     }
 
-    private var previousInput: Int? = null
+    private var previousInput: Float? = null
     private var symbol: String? = null
+    private var isFloat : Boolean = false
 
     private fun onCellClicked(value: String) {
         when {
             value.isNum() -> {
-                input = value.toInt()
+                input = value.toFloat()
+                updateDisplayContainer(value)
+            }
+
+            value == "." -> {
+                isFloat = true
                 updateDisplayContainer(value)
             }
             value == "=" -> onEqualsClicked()
